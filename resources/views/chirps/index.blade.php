@@ -28,27 +28,26 @@
                             </div>
                         </div>
                         <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
+
                         <!-- Like/Unlike buttons and Like count -->
                         <div class="mt-4 flex items-center space-x-4">
-                            @if ($chirp->likes->contains('user_id', auth()->id()))
-                                <form method="POST" action="{{ route('chirps.unlike', $chirp) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
-                                        <img src="{{ asset('/images/thumb-down.png') }}" alt="Like" class="h-6 w-6">
-                                    </button>
-                                </form>
-                            @else
-                                <form method="POST" action="{{ route('chirps.like', $chirp) }}">
-                                    @csrf
-                                    @method('POST')
-                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                        <img src="{{ asset('/images/thumb-up.png') }}" alt="Like" class="h-6 w-6">
-                                    </button>
-                                </form>
-                            @endif
-                            <span class="text-gray-500">{{ $chirp->likes->count() }} Likes</span>
+                            <button
+                                type="button"
+                                class="like-btn focus:outline-none"
+                                data-chirp-id="{{ $chirp->id }}"
+                                data-is-liked="{{ $chirp->likes->contains('user_id', auth()->id()) ? 'true' : 'false' }}"
+                            >
+                                @if ($chirp->likes->contains('user_id', auth()->id()))
+                                    <img src="{{ asset('images/thumb-down.png') }}" alt="Unlike" class="h-6 w-6">
+                                @else
+                                    <img src="{{ asset('images/thumb-up.png') }}" alt="Like" class="h-6 w-6">
+                                @endif
+                            </button>
+                            <span class="text-gray-500 likes-count" id="likes-count-{{ $chirp->id }}">
+                                {{ $chirp->likes->count() }} Likes
+                            </span>
                         </div>
+
 
                     </div>
                     @if ($chirp->user->is(auth()->user()))
