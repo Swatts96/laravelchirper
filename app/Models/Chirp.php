@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Chirp extends Model
 {
 //test
+    use HasFactory;
+
     protected $fillable = ['message'];
 
     protected $dispatchesEvents = [
@@ -18,5 +20,10 @@ class Chirp extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
     }
 }
