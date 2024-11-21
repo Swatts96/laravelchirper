@@ -41,6 +41,7 @@
                             @else
                                 <form method="POST" action="{{ route('chirps.like', $chirp) }}">
                                     @csrf
+                                    @method('POST')
                                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                                         <img src="{{ asset('/images/thumb-up.png') }}" alt="Like" class="h-6 w-6">
                                     </button>
