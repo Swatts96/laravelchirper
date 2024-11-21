@@ -48,4 +48,10 @@ class User extends Authenticatable
     public function chirp(): HasMany {
         return $this->hasMany(Chirp::class);
     }
+
+    public function likedChirps()
+    {
+        return $this->belongsToMany(Chirp::class, 'likes', 'user_id', 'chirp_id');
+    }
+
 }
