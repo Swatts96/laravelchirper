@@ -8,20 +8,26 @@ use Illuminate\Http\Request;
 class LikeController extends Controller
 {
     // Storing a like
-    public function store(Request $request, Chirp $chirp): \Illuminate\Http\RedirectResponse
+    public function store(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
-        // adding the like
+        // Add the like
         $chirp->likes()->create([
             'user_id' => auth()->id(),
         ]);
-        return redirect()->back()->with('success', 'Chirp liked!');
+
+        // Return the updated like count
+        return response()->json(['likesCount' => $chirp->likes()->count()]);
     }
 
+
     // Removing a like
-    public function destroy(Request $request, Chirp $chirp): \Illuminate\Http\RedirectResponse
+    public function destroy(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
-        // Find the like and delete it
+        // Remove the like
         $chirp->likes()->where('user_id', auth()->id())->delete();
-        return redirect()->back()->with('success', 'Chirp unliked!');
+
+        // Return the updated like count
+        return response()->json(['likesCount' => $chirp->likes()->count()]);
     }
+
 }

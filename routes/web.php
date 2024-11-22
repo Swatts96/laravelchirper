@@ -14,8 +14,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('/chirps/{chirp}/like', [LikeController::class, 'store'])->name('chirps.like');
-Route::delete('/chirps/{chirp}/like', [LikeController::class, 'destroy'])->name('chirps.unlike');
 
 
 Route::middleware('auth')->group(function () {
@@ -28,5 +26,9 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'store'])
         ->only(['index', 'store', 'edit', 'show', 'update', 'destroy'])
         ->middleware(['auth', 'verified']);
+
+
+Route::post('/chirps/{chirp}/like', [LikeController::class, 'store'])->name('chirps.like');
+Route::delete('/chirps/{chirp}/like', [LikeController::class, 'destroy'])->name('chirps.unlike');
 
 require __DIR__.'/auth.php';
