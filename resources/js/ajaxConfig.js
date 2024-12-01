@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Select all like buttons
+    // Selecting all like buttons
     const buttons = document.querySelectorAll('.like-btn');
 
     buttons.forEach(button => {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const method = isLiked ? 'delete' : 'post';
 
-            // Send the AJAX request using Axios
+            // Sending the AJAX request using Axios
             axios({
                 method: method,
                 url: url,
@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
             })
                 .then(response => {
-                    // Toggle the like state
+                    // Toggle like state
                     this.dataset.isLiked = isLiked ? 'false' : 'true';
 
-                    // Update the button's icon based on the new state
+                    // Updating the button's icon based on the new state
                     this.innerHTML = isLiked
                         ? `<img src="/images/thumb-up.png" alt="Like" class="h-6 w-6">`
                         : `<img src="/images/thumb-down.png" alt="Unlike" class="h-6 w-6">`;
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const likesCountElement = document.querySelector(`#likes-count-${chirpId}`);
                     likesCountElement.textContent = `${response.data.likesCount} Likes`;
                 })
+                // Minor validation
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Something went wrong. Please try again.');

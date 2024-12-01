@@ -8,8 +8,32 @@
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
             >{{ old('message') }}</textarea>
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
-            <x-primary-button class="mt-4">{{ __('Chirp') }}</x-primary-button>
+
+            <!-- GIF Button -->
+            <button type="button" onclick="openGifModal()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+                Add GIF
+            </button>
+
+            <!-- Submit Button-->
+            <x-primary-button class="mt-4 ">{{ __('Chirp') }}</x-primary-button>
         </form>
+
+        <!-- GIF Modal -->
+        <div id="gifModal">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-lg">
+                <input
+                    type="text"
+                    id="gifSearch"
+                    placeholder="Search for GIFs"
+                    class="w-full border-gray-300 rounded-md mb-4"
+                >
+                <div id="gifResults"></div> <!-- Should populate using our giphy api, using the collection of gifs I saved for the assignment -->
+                <button onclick="closeGifModal()" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">
+                    Close
+                </button>
+            </div>
+        </div>
+
 
         <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
             @foreach ($chirps as $chirp)
