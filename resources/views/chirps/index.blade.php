@@ -143,3 +143,24 @@
     }
 
 </script>
+
+
+<style>
+    #gifResults {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two columns */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    #gifResults img {
+        border-radius: 8px; /* Rounded corners */
+        cursor: pointer;
+
+    }
+
+    #gifResults img:hover {
+        transform: scale(1.1); /* Slight zoom on hover */
+        transition: transform 0.2s ease; /* hover effect when mousing over gifs */
+    }
+</style>
