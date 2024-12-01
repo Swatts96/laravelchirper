@@ -142,6 +142,13 @@
         closeGifModal();
     }
 
+    // Close the modal with the escape key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeGifModal();
+        }
+    });
+
 </script>
 
 
