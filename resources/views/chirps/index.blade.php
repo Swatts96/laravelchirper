@@ -111,7 +111,14 @@
     }
 
     function closeGifModal() {
+        // Hide the modal
         document.getElementById('gifModal').classList.add('hidden');
+
+        // Clear the search query input
+        document.getElementById('gifSearch').value = '';
+
+        // Clear the search results
+        document.getElementById('gifResults').innerHTML = '';
     }
 
     document.getElementById('gifSearch').addEventListener('input', async (e) => {
