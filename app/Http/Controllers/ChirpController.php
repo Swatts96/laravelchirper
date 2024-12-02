@@ -8,16 +8,29 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Exception\CommonMarkException;
+
 class ChirpController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * @throws CommonMarkException
      */
-    public function index(): view
+
+
+    public function index(): View
     {
-        //
+        $chirps = Chirp::with('user')->latest()->get();
+
+        // Convert markdown to HTML for each chirp
+        $converter = new CommonMarkConverter();
+        foreach ($chirps as $chirp) {
+            $chirp->message = $converter->convertToHtml($chirp->message);
+        }
+
         return view('chirps.index', [
-            'chirps' => Chirp::with('user')->latest()->get(),
+            'chirps' => $chirps,
         ]);
     }
 

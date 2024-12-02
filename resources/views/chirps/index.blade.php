@@ -3,6 +3,7 @@
         <form method="POST" action="{{ route('chirps.store') }}">
             @csrf
             <textarea
+                id="chirpMessage"
                 name="message"
                 placeholder="{{ __('What\'s on your mind?') }}"
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
@@ -51,7 +52,17 @@
                                 @endunless
                             </div>
                         </div>
-                        <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
+                        <p class="mt-4 text-lg text-gray-900">
+                            {!! nl2br(e($chirp->message)) !!}
+                        </p>
+                        @if (Str::contains($chirp->message, '![GIF]('))
+                            @php
+                                preg_match('/!\[GIF\]\((.*?)\)/', $chirp->message, $matches);
+                            @endphp
+                            @if (!empty($matches[1]))
+                                <img src="{{ $matches[1] }}" alt="GIF" class="mt-4 rounded-lg max-w-full">
+                            @endif
+                        @endif
 
                         <!-- Like/Unlike buttons and Like count -->
                         <div class="mt-4 flex items-center space-x-4">
@@ -106,6 +117,7 @@
     </div>
 </x-app-layout>
 <script>
+
     function openGifModal() {
         document.getElementById('gifModal').classList.remove('hidden');
     }
@@ -178,3 +190,4 @@
         transition: transform 0.2s ease; /* hover effect when mousing over gifs */
     }
 </style>
+
