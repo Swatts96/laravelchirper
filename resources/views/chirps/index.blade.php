@@ -53,9 +53,9 @@
                             </div>
                         </div>
                         <p class="mt-4 text-lg text-gray-900">
-                            {!! nl2br(e($chirp->message)) !!}
+                            {!! $chirp->message !!}
                         </p>
-                        @if (Str::contains($chirp->message, '![GIF]('))
+                    @if (Str::contains($chirp->message, '![GIF]('))
                             @php
                                 preg_match('/!\[GIF\]\((.*?)\)/', $chirp->message, $matches);
                             @endphp
