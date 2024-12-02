@@ -11,12 +11,15 @@
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
 
             <!-- GIF Button -->
-            <button type="button" onclick="openGifModal()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-                Add GIF
-            </button>
+            <x-primary-button type="button" class="mt-4" onclick="openGifModal()">
+                {{ __('Add GIF') }}
+            </x-primary-button>
 
             <!-- Submit Button-->
-            <x-primary-button class="mt-4 ">{{ __('Chirp') }}</x-primary-button>
+            <x-primary-button class="mt-4 bg-blue-300">
+                {{ __('Send Chirp!') }}
+            </x-primary-button>
+
         </form>
 
         <!-- GIF Modal -->
@@ -55,6 +58,7 @@
                         <p class="mt-4 text-lg text-gray-900">
                             {!! $chirp->message !!}
                         </p>
+
                     @if (Str::contains($chirp->message, '![GIF]('))
                             @php
                                 preg_match('/!\[GIF\]\((.*?)\)/', $chirp->message, $matches);
