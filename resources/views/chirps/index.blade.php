@@ -86,7 +86,7 @@
 
                             <!-- Vote Count -->
                             <span id="votes-count-{{ $chirp->id }}" class="text-gray-500">
-                                {{ $chirp->total_votes }} Votes
+                                {{ $chirp->total_votes ?? 0 }} Votes
                             </span>
 
                             <!-- Downvote Button -->

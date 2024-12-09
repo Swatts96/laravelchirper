@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
-    public function upvote(Request $request, Chirp $chirp)
+    public function upvote(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
         // Remove downvote if exists
         $chirp->votes()->where('user_id', auth()->id())->where('type', 'downvote')->delete();
@@ -22,7 +22,7 @@ class VoteController extends Controller
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
 
-    public function downvote(Request $request, Chirp $chirp)
+    public function downvote(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
         // Remove upvote if exists
         $chirp->votes()->where('user_id', auth()->id())->where('type', 'upvote')->delete();
