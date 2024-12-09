@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -45,13 +44,42 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function chirp(): HasMany {
+
+    /**
+     * Relationship: User has many chirps.
+     */
+    public function chirp(): HasMany
+    {
         return $this->hasMany(Chirp::class);
     }
 
-    public function likedChirps()
+    /**
+     * Relationship: User's votes on chirps.
+     */
+    public function votes(): HasMany
     {
-        return $this->belongsToMany(Chirp::class, 'likes', 'user_id', 'chirp_id');
+        return $this->hasMany(Vote::class);
     }
 
+    /**
+     * Check if the user has upvoted a specific chirp.
+     */
+    public function hasUpvoted(Chirp $chirp): bool
+    {
+        return $this->votes()
+            ->where('chirp_id', $chirp->id)
+            ->where('type', 'upvote')
+            ->exists();
+    }
+
+    /**
+     * Check if the user has downvoted a specific chirp.
+     */
+    public function hasDownvoted(Chirp $chirp): bool
+    {
+        return $this->votes()
+            ->where('chirp_id', $chirp->id)
+            ->where('type', 'downvote')
+            ->exists();
+    }
 }
