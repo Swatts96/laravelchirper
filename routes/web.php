@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\http\Controllers\ChirpController;
+use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
 
@@ -14,6 +15,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/chirps/{chirp}/upvote', [VoteController::class, 'upvote'])->name('chirps.upvote');
+Route::post('/chirps/{chirp}/downvote', [VoteController::class, 'downvote'])->name('chirps.downvote');
 
 
 Route::middleware('auth')->group(function () {

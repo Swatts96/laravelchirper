@@ -7,7 +7,7 @@
                 name="message"
                 placeholder="{{ __('What\'s on your mind?') }}"
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-            >{{ old('message') }}</textarea>
+                oninput="adjustTextareaHeight(this)">{{ old('message') }}</textarea>
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
 
             <!-- GIF Button -->
@@ -31,7 +31,7 @@
                     placeholder="Search for GIFs"
                     class="w-full border-gray-300 rounded-md mb-4"
                 >
-                <div id="gifResults"></div> <!-- Should populate using our giphy api, using the collection of gifs I saved for the assignment -->
+                <div id="gifResults"></div> <!-- Should populate using our giphy api-->
                 <button onclick="closeGifModal()" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">
                     Close
                 </button>
@@ -59,34 +59,48 @@
                             {!! $chirp->message !!}
                         </p>
 
-                    @if (Str::contains($chirp->message, '![GIF]('))
-                            @php
-                                preg_match('/!\[GIF\]\((.*?)\)/', $chirp->message, $matches);
-                            @endphp
-                            @if (!empty($matches[1]))
-                                <img src="{{ $matches[1] }}" alt="GIF" class="mt-4 rounded-lg max-w-full">
+                        <!-- Reg expression found on stack overflow and tweaked with GPT
+                        detect and extract GIF URLs embedded in markdown format.
+                        If a GIF URL is detected, an <img> tag is added to render the GIF. -->
+                        @if (Str::contains($chirp->message, '![GIF]('))
+                                @php
+                                    preg_match('/!\[GIF\]\((.*?)\)/', $chirp->message, $matches);
+                                @endphp
+                                @if (!empty($matches[1]))
+                                    <img src="{{ $matches[1] }}" alt="GIF" class="mt-4 rounded-lg max-w-full">
+                                @endif
                             @endif
-                        @endif
 
-                        <!-- Like/Unlike buttons and Like count -->
-                        <div class="mt-4 flex items-center space-x-4">
+                        <div class="flex items-center space-x-4">
+                            <!-- Upvote Button -->
                             <button
                                 type="button"
-                                class="like-btn focus:outline-none"
+                                class="vote-btn"
                                 data-chirp-id="{{ $chirp->id }}"
-                                data-is-liked="{{ $chirp->likes->contains('user_id', auth()->id()) ? 'true' : 'false' }}"
+                                data-vote-type="upvote"
                             >
-                                @if ($chirp->likes->contains('user_id', auth()->id()))
-                                    <img src="{{ asset('images/thumb-down.png') }}" alt="Unlike" class="h-6 w-6">
-                                @else
-                                    <img src="{{ asset('images/thumb-up.png') }}" alt="Like" class="h-6 w-6">
-                                @endif
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 15l7-7 7 7" />
+                                </svg>
                             </button>
-                            <span class="text-gray-500 likes-count" id="likes-count-{{ $chirp->id }}">
-                                {{ $chirp->likes->count() }} Likes
-                            </span>
-                        </div>
 
+                            <!-- Vote Count -->
+                            <span id="votes-count-{{ $chirp->id }}" class="text-gray-500">
+                                {{ $chirp->total_votes }} Votes
+                            </span>
+
+                            <!-- Downvote Button -->
+                            <button
+                                type="button"
+                                class="vote-btn"
+                                data-chirp-id="{{ $chirp->id }}"
+                                data-vote-type="downvote"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
 
                     </div>
                     @if ($chirp->user->is(auth()->user()))
@@ -120,6 +134,7 @@
         </div>
     </div>
 </x-app-layout>
+
 <script>
 
     function openGifModal() {
@@ -141,7 +156,7 @@
         const query = e.target.value;
         if (!query) return;
 
-        const apiKey = 'G87j6bzmFMAZbkd9k8VfYqJegmZwvZoZ'; // Replace with your Giphy API key
+        const apiKey = 'G87j6bzmFMAZbkd9k8VfYqJegmZwvZoZ'; // Replace with our Giphy API key
         const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${query}&limit=9`;
 
         const response = await fetch(url);
@@ -169,6 +184,22 @@
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeGifModal();
+        }
+    });
+
+    function adjustTextareaHeight(textarea) {
+         // Optional: Reset the height so we can correctly calculate the scrollHeight
+        textarea.style.height = 'auto';
+
+        // Optional: Set the height to match the scrollHeight
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+
+    // Optional: Adjust height on page load for pre-filled content
+    document.addEventListener('DOMContentLoaded', () => {
+        const textarea = document.getElementById('chirpMessage');
+        if (textarea) {
+        adjustTextareaHeight(textarea);
         }
     });
 

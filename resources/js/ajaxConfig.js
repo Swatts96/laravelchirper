@@ -1,19 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Selecting all like buttons
-    const buttons = document.querySelectorAll('.like-btn');
+    const buttons = document.querySelectorAll('.vote-btn');
 
     buttons.forEach(button => {
         button.addEventListener('click', function () {
-            // Get the chirp ID and like state from the button's data attributes
             const chirpId = this.dataset.chirpId;
-            const isLiked = this.dataset.isLiked === 'true';
+            const voteType = this.dataset.voteType; // 'upvote' or 'downvote'
 
-            // Determine the URL and HTTP method
-            const url = `/chirps/${chirpId}/like`;
+            const url = `/chirps/${chirpId}/${voteType}`;
+            const method = 'post';
 
-            const method = isLiked ? 'delete' : 'post';
-
-            // Sending the AJAX request using Axios
             axios({
                 method: method,
                 url: url,
@@ -22,19 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
             })
                 .then(response => {
-                    // Toggle like state
-                    this.dataset.isLiked = isLiked ? 'false' : 'true';
-
-                    // Updating the button's icon based on the new state
-                    this.innerHTML = isLiked
-                        ? `<img src="/images/thumb-up.png" alt="Like" class="h-6 w-6">`
-                        : `<img src="/images/thumb-down.png" alt="Unlike" class="h-6 w-6">`;
-
-                    // Update the likes count
-                    const likesCountElement = document.querySelector(`#likes-count-${chirpId}`);
-                    likesCountElement.textContent = `${response.data.likesCount} Likes`;
+                    // Update vote count in UI
+                    const voteCountElement = document.querySelector(`#votes-count-${chirpId}`);
+                    voteCountElement.textContent = `${response.data.totalVotes} Votes`;
                 })
-                // Minor validation
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Something went wrong. Please try again.');
@@ -42,5 +28,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-//Ready for marking
