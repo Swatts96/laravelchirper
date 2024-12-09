@@ -1,28 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.vote-btn');
+    const voteButtons = document.querySelectorAll('.vote-btn');
 
-    buttons.forEach(button => {
+    voteButtons.forEach(button => {
         button.addEventListener('click', function () {
             const chirpId = this.dataset.chirpId;
-            const voteType = this.dataset.voteType; // 'upvote' or 'downvote'
+            const voteType = this.dataset.voteType;
 
-            const url = `/chirps/${chirpId}/${voteType}`;
+            console.log(`Voting ${voteType} for chirp ID: ${chirpId}`); // Debug log
 
-            axios({
-                method: 'post',
-                url: url,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
+            axios.post(`/chirps/${chirpId}/vote`, {
+                type: voteType,
             })
                 .then(response => {
-                const voteCountElement = document.querySelector(`#votes-count-${chirpId}`);
-                voteCountElement.textContent = `${response.data.totalVotes} Votes`;
-            })
+                    console.log('Response from server:', response.data);
+                    const voteCountElement = document.querySelector(`#votes-count-${chirpId}`);
+                    voteCountElement.textContent = `${response.data.totalVotes} Votes`;
+                })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error occurred:', error.response || error.message);
                     alert('Something went wrong. Please try again.');
                 });
+
         });
     });
 });

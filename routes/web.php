@@ -28,10 +28,8 @@ Route::middleware('auth')->group(function () {
         ->middleware(['auth', 'verified']);
 
 
-//Route::post('/chirps/{chirp}/like', [LikeController::class, 'store'])->name('chirps.like');
-//Route::delete('/chirps/{chirp}/like', [LikeController::class, 'destroy'])->name('chirps.unlike');
+Route::post('/chirps/{chirp}/vote', [VoteController::class, 'store'])->name('chirps.vote');
+Route::delete('/chirps/{chirp}/vote', [VoteController::class, 'destroy'])->name('chirps.unvote');
 
-Route::post('/chirps/{chirp}/upvote', [VoteController::class, 'upvote'])->name('chirps.upvote');
-Route::post('/chirps/{chirp}/downvote', [VoteController::class, 'downvote'])->name('chirps.downvote');
 
 require __DIR__.'/auth.php';

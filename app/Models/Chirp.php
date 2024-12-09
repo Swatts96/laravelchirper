@@ -27,15 +27,21 @@ class Chirp extends Model
 //        return $this->hasMany(Like::class);
 //    }
 
-    public function votes()
+    public function votes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Vote::class);
     }
 
-    public function getTotalVotesAttribute()
+    public function getTotalVotesAttribute(): int
     {
+        \Log::info('Calculating total votes for chirp', ['chirp_id' => $this->id]);
+
         $upvotes = $this->votes()->where('type', 'upvote')->count();
         $downvotes = $this->votes()->where('type', 'downvote')->count();
+
+        \Log::info('Vote counts', ['upvotes' => $upvotes, 'downvotes' => $downvotes]);
+
         return $upvotes - $downvotes;
     }
+
 }

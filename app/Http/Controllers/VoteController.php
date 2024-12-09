@@ -3,35 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chirp;
-use App\Models\Vote;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
-    public function upvote(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
+    /**
+     * Store a new vote or update an existing vote.
+     */
+    public function store(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
-        // Remove downvote if exists
-        $chirp->votes()->where('user_id', auth()->id())->where('type', 'downvote')->delete();
+        $request->validate(['type' => 'required|in:upvote,downvote']);
 
-        // Add upvote
+        // Remove the opposite vote
+        $chirp->votes()
+            ->where('user_id', auth()->id())
+            ->where('type', $request->type === 'upvote' ? 'downvote' : 'upvote')
+            ->delete();
+
+        // Add or update the current vote
         $chirp->votes()->updateOrCreate(
             ['user_id' => auth()->id()],
-            ['type' => 'upvote']
+            ['type' => $request->type]
         );
 
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
 
-    public function downvote(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
+    public function destroy(Chirp $chirp): \Illuminate\Http\JsonResponse
     {
-        // Remove upvote if exists
-        $chirp->votes()->where('user_id', auth()->id())->where('type', 'upvote')->delete();
-
-        // Add downvote
-        $chirp->votes()->updateOrCreate(
-            ['user_id' => auth()->id()],
-            ['type' => 'downvote']
-        );
+        // Remove the vote
+        $chirp->votes()->where('user_id', auth()->id())->delete();
 
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
