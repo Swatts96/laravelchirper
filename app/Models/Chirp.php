@@ -22,10 +22,10 @@ class Chirp extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function likes() //TO BE REPLACED BY VOTES BUT ONCE REMOVED CURRENTLY BREAKS APP
-    {
-        return $this->hasMany(Like::class);
-    }
+//    public function likes() //TO BE REPLACED BY VOTES BUT ONCE REMOVED CURRENTLY BREAKS APP
+//    {
+//        return $this->hasMany(Like::class);
+//    }
 
     public function votes()
     {
