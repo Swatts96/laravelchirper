@@ -72,6 +72,14 @@
                             @endif
 
                         <div class="flex items-center space-x-4">
+
+
+                            <!-- Vote Count -->
+                            <span id="votes-count-{{ $chirp->id }}" class="text-gray-500">
+                                {{ $chirp->total_votes ?? 0 }} Votes
+                            </span>
+
+
                             <!-- Upvote Button -->
                             <button
                                 type="button"
@@ -84,10 +92,15 @@
                                 </svg>
                             </button>
 
-                            <!-- Vote Count -->
-                            <span id="votes-count-{{ $chirp->id }}" class="text-gray-500">
-                                {{ $chirp->total_votes ?? 0 }} Votes
-                            </span>
+                            <!-- Neutral Button -->
+                            <button
+                                type="button"
+                                class="vote-btn"
+                                data-chirp-id="{{ $chirp->id }}"
+                                data-vote-type="neutral"
+                            >
+                                ◌
+                            </button>
 
                             <!-- Downvote Button -->
                             <button
@@ -100,6 +113,9 @@
                                     <path d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
+
+
+
                         </div>
 
                     </div>

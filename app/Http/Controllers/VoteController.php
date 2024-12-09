@@ -12,22 +12,24 @@ class VoteController extends Controller
      */
     public function store(Request $request, Chirp $chirp): \Illuminate\Http\JsonResponse
     {
-        $request->validate(['type' => 'required|in:upvote,downvote']);
+        $request->validate([
+            'type' => 'required|in:upvote,downvote,neutral',
+        ]);
 
-        // Remove the opposite vote
-        $chirp->votes()
-            ->where('user_id', auth()->id())
-            ->where('type', $request->type === 'upvote' ? 'downvote' : 'upvote')
-            ->delete();
+        // Remove any existing vote for the current user
+        $chirp->votes()->where('user_id', auth()->id())->delete();
 
-        // Add or update the current vote
-        $chirp->votes()->updateOrCreate(
-            ['user_id' => auth()->id()],
-            ['type' => $request->type]
-        );
+        // If the vote is not neutral, add the new vote
+        if ($request->type !== 'neutral') {
+            $chirp->votes()->create([
+                'user_id' => auth()->id(),
+                'type' => $request->type,
+            ]);
+        }
 
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
+
 
     public function destroy(Chirp $chirp): \Illuminate\Http\JsonResponse
     {
