@@ -34,14 +34,12 @@ class Chirp extends Model
 
     public function getTotalVotesAttribute(): int
     {
-        \Log::info('Calculating total votes for chirp', ['chirp_id' => $this->id]);
-
         $upvotes = $this->votes()->where('type', 'upvote')->count();
         $downvotes = $this->votes()->where('type', 'downvote')->count();
 
-        \Log::info('Vote counts', ['upvotes' => $upvotes, 'downvotes' => $downvotes]);
-
         return $upvotes - $downvotes;
     }
+
+
 
 }

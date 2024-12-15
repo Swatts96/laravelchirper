@@ -1,0 +1,28 @@
+# ignore .env files
+.env
+.env.*
+
+#ignore node modules directory
+/node_modules
+
+/vendor
+
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+.DS_Store
+Thumbs.db
+
+/storage/*
+!/storage/app
+!/storage/public
+!/storage/logs
+
+/.phpunit.result.cache
+/tests
+/.docker
+/.git
+/.gitignore
+/.env.docker

@@ -9,9 +9,6 @@ class Vote extends Model
 {
     use HasFactory;
 
-    public const UPVOTE = 'upvote';
-    public const DOWNVOTE = 'downvote';
-
     protected $fillable = ['user_id', 'chirp_id', 'type'];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

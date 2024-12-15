@@ -26,7 +26,6 @@ class VoteController extends Controller
                 'type' => $request->type,
             ]);
         }
-
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
 
@@ -35,7 +34,6 @@ class VoteController extends Controller
     {
         // Remove the vote
         $chirp->votes()->where('user_id', auth()->id())->delete();
-
         return response()->json(['totalVotes' => $chirp->total_votes]);
     }
 }
