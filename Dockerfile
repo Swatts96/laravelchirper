@@ -39,14 +39,13 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate application key
-RUN php artisan key:generate
-
 # Ensure the public/storage symlink is properly set up
 RUN php artisan storage:link
 
 # Ensure necessary migrations are run before startup
 RUN php artisan migrate --force
+
+RUN php artisan config:clear
 
 
 # Set CMD to start the Laravel app
