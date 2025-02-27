@@ -15,7 +15,7 @@ FROM php:8.3-apache
 
 # Set environment variables and document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN apt-get update && apt-get install -y libzip-dev zip && docker-php-ext-install pdo_mysql zip && a2enmod rewrite
+RUN apt-get update && apt-get install -y libzip-dev zip unzip && docker-php-ext-install pdo_mysql zip && a2enmod rewrite
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -34,15 +34,17 @@ RUN composer install --no-dev --optimize-autoloader
 RUN mkdir -p /var/www/html/storage /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/storage/framework/cache /var/www/html/bootstrap/cache && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/storage/framework/cache /var/www/html/bootstrap/cache
 
-# Create the storage symlink (this will also create the public/storage directory automatically)
+# Set permissions for Laravel storage and cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Generate application key
+RUN php artisan key:generate
+
+# Ensure the public/storage symlink is properly set up
 RUN php artisan storage:link
 
-# Ensure the public/storage symlink has the correct permissions
-RUN chown -h www-data:www-data /var/www/html/public/storage
+# Ensure necessary migrations are run before startup
+RUN php artisan migrate --force
 
-# Copy the entrypoint script into the container
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Set the entrypoint to the script
-ENTRYPOINT ["entrypoint.sh"]
+# Set CMD to start the Laravel app
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
