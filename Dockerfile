@@ -37,6 +37,8 @@ RUN mkdir -p /var/www/html/storage /var/www/html/storage/framework/sessions /var
 # Set permissions for Laravel storage and cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+RUN composer install --no-dev --optimize-autoloader
+
 # Generate application key
 RUN php artisan key:generate
 
@@ -45,6 +47,7 @@ RUN php artisan storage:link
 
 # Ensure necessary migrations are run before startup
 RUN php artisan migrate --force
+
 
 # Set CMD to start the Laravel app
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
